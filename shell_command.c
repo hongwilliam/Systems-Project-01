@@ -4,7 +4,11 @@
 #include <fcntl.h>
 #include <string.h>
 #include <sys/stat.h>
-//more headers might need to be included
+#include <time.h>
+#include <sys/wait.h>
+#include <dirent.h>
+
+#include "shell_command.h"
 //reminder: there can only be one main function!
 
 /** IMPLEMENTING FEATURE 1:
@@ -68,7 +72,7 @@ char ** parse_line(char * line){
 
     //allocate memory
     while (i < num_tokens){
-      answer[i] = (char *)malloc(128);
+      answer[i] = (char *)malloc(512);
       i++; }
 
     i = 0;
@@ -81,6 +85,57 @@ char ** parse_line(char * line){
     answer[i] = 0;
     return answer;
 }
+
+//return pointer to beginning of line
+//fix formatting of input to faciliate easier testing
+char * fix_format(char * line){
+
+  //get rid of pesky spaces at front
+  while(isspace(*line)){
+    line ++; }
+
+  //get rid of pesky spaces at back
+  char * back = line + strlen(line) - 1;
+  while (line < back && isspace(*back) ){
+      end --; }
+
+  //place terminating null
+  *(end + 1) = 0;
+
+  return line;
+
+}
+
+
+/** IMPLEMENTING FEATURE 3:
+-implement simple redirecion using > and <
+*/
+
+//redirect file descriptor std to new file
+//create new file if nonexistent
+//return fie descriptor for redirected file
+int redirect(int std, int *original, char * file){
+  //store original value of std
+  *original = dup(std);
+
+  //fix formatting
+  file = fix_format(file);
+
+  //create file
+  int fd = open(file, O_RDWR | O_CREATE, 0644);
+
+  //redirect
+  dup2(fd, std);
+  return fd;
+
+}
+
+//redirect file descriptor std to original file
+//literally straight from class notes
+void redirect_back(int fd, int std, int original){
+  dup2(original, std);
+  close(fd); }
+
 
 int main(){
   char line2[] = "ls ; man chdir";
