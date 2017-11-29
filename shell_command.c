@@ -7,6 +7,7 @@
 #include <time.h>
 #include <sys/wait.h>
 #include <dirent.h>
+#include <ctype.h>
 
 #include "shell_command.h"
 //reminder: there can only be one main function!
@@ -31,18 +32,6 @@ char ** parse_args(char * line){
   }
   arguments[i] = NULL;
   return arguments;
-}
-
-void exec_command(char * line){
-
-  //fork and then exec the command
-  int f;
-  f = fork();
-  //work on forking and sleeping later
-
-  char *s = line;
-  char **args = parse_args(line);
-  execvp(args[0], args);
 }
 
 /** IMPLEMENTING FEATURE 2:
@@ -97,10 +86,10 @@ char * fix_format(char * line){
   //get rid of pesky spaces at back
   char * back = line + strlen(line) - 1;
   while (line < back && isspace(*back) ){
-      end --; }
+      back --; }
 
   //place terminating null
-  *(end + 1) = 0;
+  *(back + 1) = 0;
 
   return line;
 
@@ -122,7 +111,7 @@ int redirect(int std, int *original, char * file){
   file = fix_format(file);
 
   //create file
-  int fd = open(file, O_RDWR | O_CREATE, 0644);
+  int fd = open(file, O_RDWR | O_CREAT, 0644);
 
   //redirect
   dup2(fd, std);
@@ -136,11 +125,43 @@ void redirect_back(int fd, int std, int original){
   dup2(original, std);
   close(fd); }
 
+//new and improved
+void exec_command(char * line){
+
+  //setup
+  line = fix_format(line);
+  int tokens = count_num_tokens(line);
+  char ** command_arr = parse_line(line);
+  int command;
+  int status;
+
+
+  /**
+  //special case: if user entered cd
+  if ( strncmp(command_arr[0], "cd", sizeof(command_arr[0]) ) == 0){
+    chdir(command_arr[1]);
+    //deal with errors later
+  }
+
+  else{
+  */
+    //fork and then exec the command
+    int f;
+    f = fork();
+    if (f == 0){
+      execvp(command_arr[0], command_arr);
+      //deal with errors later
+    }
+    else{
+      f = wait(&status); }
+
+
+}
+
+
+
 
 int main(){
   char line2[] = "ls ; man chdir";
   printf("\nnumber of tokens in 'ls ; man chdir': %d \n", count_num_tokens(line2));
-
-  char line[] = "ls -l -a";
-  exec_command(line);
 }
