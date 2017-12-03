@@ -174,19 +174,19 @@ void process_input(char * line){
       command = copy; //command to be processed
 
       //redirect stdin?
-      if (strchr(s, '<') != 0){ //if there exists < in the Input
+      if (strchr(copy, '<') != 0){ //if there exists < in the Input
         strsep(&command, "<"); //separate token <
         in_fd = redirect(STDIN_FILENO, &in_copy, command);
         //refer to commenets on redirect function
       }
 
       //redirect stdout?
-      if (strchr(s, '>') != 0){
-        strsep(&s, ">");
+      if (strchr(copy, '>') != 0){
+        strsep(&command, ">");
         out_fd = redirect(STDOUT_FILENO, &out_copy, command); }
 
       //implement pipe? (limit to single pipe)
-      if (strchr(s, '|') != 0){
+      if (strchr(copy, '|') != 0){
         //redirect first command to temp
         temp = strsep(&command, "|");
         strncpy(pipe_file, ".tempfile", sizeof(pipe_file) );
