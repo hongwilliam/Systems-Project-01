@@ -45,31 +45,31 @@ char * fix_format(char * line){
 -hint 2: when parsing the line, count number of tokens (individual pieces)
 */
 
-//PARAMETERS: line - the line to be inputted, seperator - what each command is to seperated by
+//PARAMETERS: line - the line to be inputted, separator - what each command is to separated by
 //RETURN: number of tokens in the line
-//default: return 1 if the seperator is not found... this means single command
-//PURPOSE: count number of tokens - distinct commands that are seperated by a seperator - in a line
-int count_num_tokens(char * line, char seperator){
+//default: return 1 if the separator is not found... this means single command
+//PURPOSE: count number of tokens - distinct commands that are separated by a separator - in a line
+int count_num_tokens(char * line, char separator){
   int n = 1;
   char * temp = line;
-  while ( (temp = strchr(temp, seperator)) ){
+  while ( (temp = strchr(temp, separator)) ){
     temp++;
     n++; }
   return n;
 }
 
 //PARAMETERS: line - the line to be inputted
-//RETURN: array of tokens (commands) that are seperated by the seperator
+//RETURN: array of tokens (commands) that are separated by the separator
 //PURPOSE: to break apart an inputted line into its individual token components
-char ** parse_line(char * line, char seperator){
+char ** parse_line(char * line, char separator){
 
-    int num_tokens = count_num_tokens(line, seperator);
+    int num_tokens = count_num_tokens(line, separator);
     char ** answer = (char **)calloc(num_tokens, sizeof(char *));
 
-    //make a char array for the seperator to be used with strsep
-    char the_seperator[2];
-    the_seperator[0] = seperator; //singular character
-    the_seperator[1] = 0; //terminating null
+    //make a char array for the separator to be used with strsep
+    char the_separator[2];
+    the_separator[0] = separator; //singular character
+    the_separator[1] = 0; //terminating null
 
     int i = 0;
     //allocate memory
@@ -126,7 +126,7 @@ int redirect_back(int std, int original, int fd){
 //PARAMTERS: line - line to be inputted and executed
 //RETURN: N/A
 //PURPOSE: execute the command(s) inputted
-//Parse the line and sepearte each argument by a white space
+//Parse the line and separate each argument by a white space
 //The parent forks a new process and waits for the child to finish
 //to be impleneted later: handle exit and cd differently
 void exec_command(char * line){
@@ -153,7 +153,7 @@ void exec_command(char * line){
 //RETURN: N/A
 //PURPOSE: the meat and bones of the shell
 //process shell input commands to be executed
-//seperate each individual command by ; and executes each
+//separate each individual command by ; and executes each
 //handle redirection and implement pipes if applicable
 void process_input(char * line){
   //setup
@@ -169,13 +169,13 @@ void process_input(char * line){
   char *command;
   char *temp;
   while (i < num_tokens){
-      //seperate each individual command by ;
+      //separate each individual command by ;
       strncpy(copy, strsep(&line, ";"), sizeof(copy) );
       command = copy; //command to be processed
 
       //redirect stdin?
       if (strchr(s, '<') != 0){ //if there exists < in the Input
-        strsep(&command, "<"); //seperate token <
+        strsep(&command, "<"); //separate token <
         in_fd = redirect(STDIN_FILENO, &in_copy, command);
         //refer to commenets on redirect function
       }
