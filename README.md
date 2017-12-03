@@ -12,7 +12,7 @@ Features:
 
 Attempted: 
 	Originally tried to implement pipes, but didn't account for errno. 
-	Could not figure out "cd"
+	Tried figuring out how "cd" is handled by "chdir"
 
 Bugs:
 	Running two commands in one line is not working. Only the first command is run, ignoring the second command, and exiting.
