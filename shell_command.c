@@ -21,16 +21,23 @@
 -hint 1: assume all items on command line are to be separated by single space
 */
 
-//return array of tokens in the line
-char ** parse_args(char * line){
-  char **arguments = (char **)calloc(6, sizeof(char *));
-  int i = 0;
-  while(i < sizeof(arguments)){
-    arguments[i] = strsep(&line, " ");
-    i++;
-  }
-  arguments[i] = NULL;
-  return arguments;
+//PARAMTERS: line - line to be inputted and fixed
+//RETURN: pointer to beginning of line
+//PURPOSE: fix formatting of input to faciliate easier testing... removing white spaces
+char * fix_format(char * line){
+  //get rid of pesky spaces at front
+  while(*line == ' '){
+    line++; }
+
+  //get rid of pesky spaces at back
+  char * back = line + strlen(line) - 1;
+  while (line < back && (*back == ' ')){
+      back--; }
+
+  //place terminating null
+  back[1] = 0;
+
+  return line;
 }
 
 /** IMPLEMENTING FEATURE 2:
@@ -38,8 +45,10 @@ char ** parse_args(char * line){
 -hint 2: when parsing the line, count number of tokens (individual pieces)
 */
 
-//tokens = distinct commands that are seperated by a seperator
-//default: return 1 if the seperator is not found; this means single command
+//PARAMETERS: line - the line to be inputted, seperator - what each command is to seperated by
+//RETURN: number of tokens in the line
+//default: return 1 if the seperator is not found... this means single command
+//PURPOSE: count number of tokens - distinct commands that are seperated by a seperator - in a line
 int count_num_tokens(char * line, char seperator){
   int n = 1;
   char * temp = line;
@@ -49,11 +58,15 @@ int count_num_tokens(char * line, char seperator){
   return n;
 }
 
-//return array of tokens (commands) that are seperated by the seperator
+//PARAMETERS: line - the line to be inputted
+//RETURN: array of tokens (commands) that are seperated by the seperator
+//PURPOSE: to break apart an inputted line into its individual token components
 char ** parse_line(char * line, char seperator){
 
     int num_tokens = count_num_tokens(line, seperator);
     char ** answer = (char **)calloc(num_tokens, sizeof(char *));
+
+    //make a char array for the seperator to be used with strsep
     char the_seperator[2];
     the_seperator[0] = seperator; //singular character
     the_seperator[1] = 0; //terminating null
@@ -61,12 +74,13 @@ char ** parse_line(char * line, char seperator){
     int i = 0;
     //allocate memory
     while (i < num_tokens){
-      answer[i] = (char *)malloc(512);
+      answer[i] = (char *)calloc(num_tokens, sizeof(char *));
       i++; }
 
     i = 0;
     //populate array
     while (i < num_tokens){
+      //remember to input the ADDRESS of line
       answer[i] = strsep(&line, the_seperator);
       i++; }
 
@@ -75,25 +89,7 @@ char ** parse_line(char * line, char seperator){
     return answer;
 }
 
-//return pointer to beginning of line
-//fix formatting of input to faciliate easier testing
-char * fix_format(char * line){
 
-  //get rid of pesky spaces at front
-  while(*line == ' '){
-    line ++; }
-
-  //get rid of pesky spaces at back
-  char * back = line + strlen(line) - 1;
-  while (line < back && (*back == ' ')){
-      back --; }
-
-  //place terminating null
-  *(back + 1) = 0;
-
-  return line;
-
-}
 
 
 /** IMPLEMENTING FEATURE 3:
