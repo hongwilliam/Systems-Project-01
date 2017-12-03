@@ -81,7 +81,7 @@ char ** parse_line(char * line, char separator){
     //populate array
     while (i < num_tokens){
       //remember to input the ADDRESS of line
-      answer[i] = strsep(&line, the_seperator);
+      answer[i] = strsep(&line, the_separator);
       i++; }
 
     //terminating NULL
