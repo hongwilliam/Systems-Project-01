@@ -1,4 +1,3 @@
-char ** parse_args(char * line);
 void exec_command(char * line);
 int count_num_tokens(char * line, char seperator);
 char ** parse_line(char * line, char seperator);
