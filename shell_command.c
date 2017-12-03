@@ -18,6 +18,7 @@
 -parent process should wait until exec'd program exits
 -read the next command
 -implement exit and cd on your own, they cannot run thru forked child process
+-hint 1: assume all items on command line are to be separated by single space
 */
 
 //return array of tokens in the line
@@ -25,7 +26,6 @@ char ** parse_args(char * line){
   char **arguments = (char **)calloc(6, sizeof(char *));
   int i = 0;
   while(i < sizeof(arguments)){
-    //hint 1: assume all items on command line are to be separated by single space
     arguments[i] = strsep(&line, " ");
     i++;
   }
@@ -214,26 +214,21 @@ void process_input(char * line){
   }
 }
 
-
+//where the fun begins
 int main(){
-  //testing input
-  char *s;
-  printf("Input commands here: ");
-  s = fgets(s, sizeof(s),stdin);
-  printf("Inputted: %s", s); //immediate feedback
+  char input[1024];
+  while (1){
+    printf("Anthony and William's Excellent Shell:" );
+    fgets(input, 1024, stdin);
 
-  int tokens = count_num_tokens(s, ' ');
-  char ** args = parse_line(s, ' ');
-  printf("Number of tokens: %d \n", tokens);
+    //insert terminating null into end of command
+    *strchr(input, '\n') = 0;
 
-  int i = 0;
-  while(i < tokens){
-    printf("Command: %s \n", args[i]); //print out each command
-    execvp(args[0], args);//execute each command
-    i++;
+    if (strncmp(input, "exit", sizeof(input)) != 0){
+      process_input(input); }
+    else{
+      exit(0); //exit the shell if user typed in exit
+    }
   }
 
-
-  //char line2[] = "ls ;man chdir";
-  //printf("\nnumber of tokens in 'ls ; man chdir': %d \n", count_num_tokens(line2, ' '));
 }
