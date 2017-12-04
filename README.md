@@ -41,37 +41,40 @@ Main shell file
 	Inputs: (char * line, char separator)
 	Returns: Array of tokens (commands) that are separated by the separator
 
-	Breaks apart an inputted line into its individual token components
+	Breaks apart an inputted line into its individual token components.
+	If the line contains multiple tokens, each token is put into an array of commands. 
 	====================*/
 
 	/*======== int redirect() ==========
 	Inputs: (int std, int *original, char * file)
 	Returns: File descriptor of the newly redirected file
 
-	Redirect file descriptor std to new file
+	Redirects file descriptor std to new file.
 	====================*/
 
 	/*======== int redirect_back() ==========
 	Inputs: (int std, int original, int fd)
 	Returns: None
 
-	Redirect file of file descriptor std to original file
+	Redirects file of file descriptor std to original file
 	====================*/
 
 	/*======== void exec_command() ==========
 	Inputs: (char * line)
 	Returns: None
 
-	Execute the command(s) inputted
+	Forks a child to execute the command(s) inputted
+	Deals with any errors from execution afterwards
+	Waits for child to finish before exiting
 	====================*/
 
-	/*======== void rocess_input() ==========
+	/*======== void process_input() ==========
 	Inputs: (char * line)
 	Returns: None
 
 	Process shell input commands to be executed
-	Separate each individual command by ; and executes each
-	Handle redirection and implement pipes if applicable
+	Separates each individual command by ; and executes each
+	Handles redirection of stdout and stdin and implements pipes if applicable
 	====================*/
 
 
