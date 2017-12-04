@@ -15,7 +15,7 @@ by Anthony Hom and William Hong
 	Tried figuring out how "cd" is handled by "chdir"
 
 ## Bugs:
-	Running two commands in one line is not working. Only the first command is run and then the program exits, ignoring the second command. 
+	Running multiple commands separated by ; works, but the shell immediately exits at the end due to seg fault
 
 ## Files and Function Headers: 
 ### shell_command.c
