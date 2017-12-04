@@ -20,6 +20,7 @@ by Anthony Hom and William Hong
 ## Files and Function Headers: 
 ### shell_command.c
 Main shell file
+	Handles all line parsing functions, redirection, and forking of executing commands
 	'''
 	/*======== char * fix_format() ==========
 	Inputs: (char * line)
