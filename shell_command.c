@@ -4,9 +4,7 @@
 #include <fcntl.h>
 #include <string.h>
 #include <sys/stat.h>
-#include <time.h>
 #include <sys/wait.h>
-#include <dirent.h>
 
 #include "shell_command.h"
 //reminder: there can only be one main function!
@@ -112,16 +110,6 @@ int redirect(int std, int *original, char * file){
 
 }
 
-//PARAMETERS: std - the file to be redirected, original - to be reverted back to
-//fd - the file to be closed
-//RETURN: N/A
-//PURPOSE: redirect file of file descriptor std to original file
-//literally straight from class notes
-int redirect_back(int std, int original, int fd){
-  dup2(original, std);
-  close(fd); //close file fd
-  return 0; }
-
 //new and improved!
 //PARAMTERS: line - line to be inputted and executed
 //RETURN: N/A
@@ -133,16 +121,14 @@ void exec_command(char * line){
 
   //setup
   line = fix_format(line);
-  int tokens = count_num_tokens(line, ' ');
   char ** command_array = parse_line(line, ' '); //parse line into an array of commands
-  int command;
   int status;
 
   //fork and then exec the command
   int f;
   f = fork();
   if (f == 0){
-    command = execvp(command_array[0], command_array);
+    execvp(command_array[0], command_array);
     //deal with errors later
   }
   else{
@@ -185,36 +171,9 @@ void process_input(char * line){
         strsep(&command, ">");
         out_fd = redirect(STDOUT_FILENO, &out_copy, command); }
 
-      //implement pipe? (limit to single pipe)
-      if (strchr(copy, '|') != 0){
-        //redirect first command to temp
-        temp = strsep(&command, "|");
-        strncpy(pipe_file, ".tempfile", sizeof(pipe_file) );
-        out_fd = redirect(STDOUT_FILENO, &out_copy, pipe_file);
-        exec_command(temp); //execute the command
-
-        //revert stdout
-        out_fd = redirect_back(STDOUT_FILENO, out_copy, out_fd);
-
-        //redirect stdin to temp
-        in_fd = redirect(STDIN_FILENO, &in_copy, pipe_file);
-        exec_command(command);
-
-
-        remove(".tempfile"); }
-
-      //no implementation of pipes desired
+      //just exec the command already!
       else{
         exec_command(copy);
-
-        //if in_fd initialized, then revert back from its redirection
-        if (in_fd){
-          in_fd = redirect_back(STDIN_FILENO, in_copy, in_fd); }
-
-        //if out_fd initialized, then revert back from its redirection
-        if (out_fd){
-          out_fd = redirect_back(STDOUT_FILENO, out_copy, out_fd); }
-
       }
   }
 }
