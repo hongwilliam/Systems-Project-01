@@ -52,13 +52,6 @@ Main shell file
 	Redirects file descriptor std to new file.
 	====================*/
 
-	/*======== int redirect_back() ==========
-	Inputs: (int std, int original, int fd)
-	Returns: None
-
-	Redirects file of file descriptor std to original file
-	====================*/
-
 	/*======== void exec_command() ==========
 	Inputs: (char * line)
 	Returns: None
